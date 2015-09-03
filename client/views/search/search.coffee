@@ -26,7 +26,7 @@ Template.search.rendered = () ->
 
   mapCanvas = @find '#map'
   mapOptions = 
-    center: new google.maps.LatLng 35.7116, 139.8014
+    center: new google.maps.LatLng 35.7116, 139.8014 # Tokyo
     zoom: 12
     mapTypeId: google.maps.MapTypeId.ROADMAP
 
@@ -51,10 +51,17 @@ Template.search.events
 
       Meteor.call "getVenues", params, (err, venues) ->
         if err then throw err
-
+        
         venues.forEach (venue) ->
           map.addMarker
             position: 
               lat: venue.location.lat
               lng: venue.location.lng
             title: venue.name
+
+        Session.set 'venues', venues.map (venue) ->
+          name: venue.name
+          lat: venue.location.lat
+          lng: venue.location.lng
+          address: venue.location.address
+          city: venue.location.city

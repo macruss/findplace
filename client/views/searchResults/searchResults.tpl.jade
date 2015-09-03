@@ -1,1 +1,18 @@
-h3 Search results
+h3 #{venues.length} venues
+button(type="button").btn.btn-default.pull-right Export CSV
+table.table.table-hover
+  thead
+    tr
+      th Name
+      th City
+      th Street Address
+      th Latitude
+      th Longitude
+  tbody
+    +each venues
+      tr
+        td #{name}
+        td #{city}
+        td #{address}
+        td #{lat}
+        td #{lng}
