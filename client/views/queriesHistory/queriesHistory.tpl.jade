@@ -1,1 +1,12 @@
-h3 queries history
+table.table.table-hover
+  tbody
+    +each queries
+      tr
+        td
+          span.glyphicon.glyphicon-trash.delete
+        td
+          strong #{query}
+        td #{lat}
+        td #{lng}
+        td #{radius}
+        td #{date}

@@ -2,6 +2,27 @@ Template.search.rendered = () ->
 
   # ======== Map =============
   class Map extends google.maps.Map
+    _getRadius:  (center, lat) ->
+      MPG = 111111 # meters per grad lat
+      MPG * Math.abs(center - lat)
+
+    _getCenter: ->
+      (value for own _, value of @getCenter())
+
+    _getQueryParams: (value)->
+      center = @_getCenter()
+      ## search in a quadrangle area
+      # ne: map.getNECorner().toString()
+      # sw: map.getSWCorner().toString()
+      
+      ## alt search in a rounded area
+      ll: center.toString()
+      radius: @_getRadius(center[0], @getNECorner()[0])
+      intent:'browse'
+      query: value
+      limit: 50
+      v: '20150901'
+
     markers: []
 
     # get south-west map corner [lat, lng]
@@ -24,10 +45,36 @@ Template.search.rendered = () ->
       @markers.length = 0
 
 
+    getVenues: (value) ->
+      Meteor.call "getVenues", @_getQueryParams(value), (err, venues) ->
+        if err then throw err
+        
+        venues = venues.map (venue) ->
+          map.addMarker
+            position: 
+              lat: venue.location.lat
+              lng: venue.location.lng
+            title: venue.name
+
+          name: venue.name
+          lat: venue.location.lat
+          lng: venue.location.lng
+          address: venue.location.address
+          city: venue.location.city
+
+        Session.set 'venues', venues
+
+
   mapCanvas = @find '#map'
   mapOptions = 
     center: new google.maps.LatLng 35.7116, 139.8014 # Tokyo
     zoom: 12
+    panControl: on
+    zoomControl: on
+    mapTypeControl: on
+    scaleControl: on
+    streetViewControl: on
+    overviewMapControl: no
     mapTypeId: google.maps.MapTypeId.ROADMAP
 
   window.map = new Map mapCanvas, mapOptions
@@ -35,33 +82,18 @@ Template.search.rendered = () ->
 Template.search.events
   'keyup #search': (e, t) ->
     if e.which == 13
-      params =
-        ## search in a quadrangle area
-        ne: map.getNECorner().toString()
-        sw: map.getSWCorner().toString()
-        intent:'browse'
-        
-        ## alt search in a rounded area
-        # ll: (value for own _, value of t.map.getCenter()).toString()
-        # radius: 1000
-        query: e.target.value
-        v: '20150901'
+      center = map._getCenter()
+      radius = map._getRadius(center[0], map.getNECorner()[0])
 
       map.removeAllMarkers()
 
-      Meteor.call "getVenues", params, (err, venues) ->
-        if err then throw err
-        
-        venues.forEach (venue) ->
-          map.addMarker
-            position: 
-              lat: venue.location.lat
-              lng: venue.location.lng
-            title: venue.name
+      Queries.insert
+        query: e.target.value
+        lat: center[0]
+        lng: center[1]
+        radius: radius
+        date: new Date()
 
-        Session.set 'venues', venues.map (venue) ->
-          name: venue.name
-          lat: venue.location.lat
-          lng: venue.location.lng
-          address: venue.location.address
-          city: venue.location.city
+      map.getVenues e.target.value
+
+
