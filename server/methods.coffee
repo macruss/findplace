@@ -10,6 +10,8 @@ Meteor.methods
 
     _.extend params, foursquareAccess
 
-    res = Meteor.http.get url, {params:params}
-
-    return res.data.response.venues
+    try
+      res = Meteor.http.get url, {params:params}
+      res.data.response.venues
+    catch err
+      throw err

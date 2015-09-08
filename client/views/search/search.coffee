@@ -2,28 +2,29 @@ Template.search.rendered = () ->
 
   # ======== Map =============
   class Map extends google.maps.Map
-    _getRadius:  (center, lat) ->
-      MPG = 111111 # meters per grad lat
-      MPG * Math.abs(center - lat)
-
     _getCenter: ->
       (value for own _, value of @getCenter())
 
-    _getQueryParams: (value)->
+    _getQueryParams: (query)->
       center = @_getCenter()
+
       ## search in a quadrangle area
       # ne: map.getNECorner().toString()
       # sw: map.getSWCorner().toString()
       
       ## alt search in a rounded area
       ll: center.toString()
-      radius: @_getRadius(center[0], @getNECorner()[0])
+      radius: @getRadius(center[0], @getNECorner()[0])
       intent:'browse'
-      query: value
+      query: query
       limit: 50
-      v: '20150901'
+      v: moment().format('YYYYMMDD') # version of data
 
     markers: []
+    
+    getRadius:  (center, lat) ->
+      MPG = 111111 # meters per grad lat
+      MPG * Math.abs(center - lat)
 
     # get south-west map corner [lat, lng]
     getSWCorner: ->
@@ -37,25 +38,41 @@ Template.search.rendered = () ->
 
     addMarker: (prop) ->
       prop.map = this
+      prop.animation = google.maps.Animation.DROP
       @markers.push new google.maps.Marker(prop)
 
     removeAllMarkers: ->
       @markers.forEach (marker) ->
         marker.setMap(null)
       @markers.length = 0
+      Session.set 'venues', null
 
+    storeQuery: (query) ->
+      center = map._getCenter()
+      radius = map.getRadius(center[0], map.getNECorner()[0])
 
-    getVenues: (value) ->
-      Meteor.call "getVenues", @_getQueryParams(value), (err, venues) ->
+      Queries.insert
+        query: query
+        lat: center[0]
+        lng: center[1]
+        radius: radius
+        date: new Date()
+
+    getVenues: (query) ->
+      Meteor.call "getVenues", @_getQueryParams(query), (err, venues) ->
         if err then throw err
         
-        venues = venues.map (venue) ->
-          map.addMarker
-            position: 
-              lat: venue.location.lat
-              lng: venue.location.lng
-            title: venue.name
+        venues = venues.map (venue, i) ->
+          #render each venue on the map
+          setTimeout ->
+            map.addMarker
+              position: 
+                lat: venue.location.lat
+                lng: venue.location.lng
+              title: venue.name
+          , i * 100
 
+          # and return object for serch result table
           name: venue.name
           lat: venue.location.lat
           lng: venue.location.lng
@@ -67,7 +84,7 @@ Template.search.rendered = () ->
 
   mapCanvas = @find '#map'
   mapOptions = 
-    center: new google.maps.LatLng 35.7116, 139.8014 # Tokyo
+    center: new google.maps.LatLng 50.44985, 30.523151 # Tokyo
     zoom: 12
     panControl: on
     zoomControl: on
@@ -81,19 +98,9 @@ Template.search.rendered = () ->
 
 Template.search.events
   'keyup #search': (e, t) ->
-    if e.which == 13
-      center = map._getCenter()
-      radius = map._getRadius(center[0], map.getNECorner()[0])
+    if e.which == 14
+      query = e.target.value
 
-      map.removeAllMarkers()
-
-      Queries.insert
-        query: e.target.value
-        lat: center[0]
-        lng: center[1]
-        radius: radius
-        date: new Date()
-
-      map.getVenues e.target.value
-
-
+      map.removeAllMarkers() if map.markers.length
+      map.storeQuery query 
+      map.getVenues query

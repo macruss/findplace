@@ -13,3 +13,4 @@ accounts-password
 accounts-google
 http
 underscore
+momentjs:moment

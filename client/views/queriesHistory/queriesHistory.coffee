@@ -4,8 +4,8 @@ getRoundRadius = (radius) ->
 Template.queriesHistory.helpers
   queries: ->
     Queries.find().map (query)->
-      query.radius = getRoundRadius(query.radius) + 'km'
-      query.date = query.date.toLocaleString()
+      query.radius = "#{getRoundRadius query.radius}km"
+      query.date = moment(query.date).format("MMM Do YY, hh:mm:ss")
       query
 
 Template.queriesHistory.events
