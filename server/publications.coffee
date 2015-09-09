@@ -1,2 +1,3 @@
 Meteor.publish 'queries', ->
-  Queries.find()
+  Queries.find
+    userId: @userId

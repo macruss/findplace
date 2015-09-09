@@ -4,13 +4,14 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-platform
-twbs:bootstrap
-stylus
-mquandalle:jade
-coffeescript
-accounts-password
 accounts-google
+accounts-password
+coffeescript
 http
-underscore
+meteor-platform
 momentjs:moment
+mquandalle:jade
+service-configuration
+stylus
+twbs:bootstrap
+underscore

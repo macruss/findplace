@@ -52,6 +52,7 @@ Template.search.rendered = () ->
       radius = map.getRadius(center[0], map.getNECorner()[0])
 
       Queries.insert
+        userId: Meteor.userId()
         query: query
         lat: center[0]
         lng: center[1]
@@ -70,7 +71,7 @@ Template.search.rendered = () ->
                 lat: venue.location.lat
                 lng: venue.location.lng
               title: venue.name
-          , i * 100
+          , i * 20
 
           # and return object for serch result table
           name: venue.name
@@ -85,7 +86,7 @@ Template.search.rendered = () ->
   mapCanvas = @find '#map'
   mapOptions = 
     center: new google.maps.LatLng 50.44985, 30.523151 # Tokyo
-    zoom: 12
+    zoom: 15
     panControl: on
     zoomControl: on
     mapTypeControl: on
@@ -98,9 +99,9 @@ Template.search.rendered = () ->
 
 Template.search.events
   'keyup #search': (e, t) ->
-    if e.which == 14
+    if e.which == 13
       query = e.target.value
 
       map.removeAllMarkers() if map.markers.length
-      map.storeQuery query 
       map.getVenues query
+      map.storeQuery query if Meteor.user()

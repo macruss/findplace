@@ -1,8 +1,25 @@
 .navbar.navbar-default
   .container
     a(href="#").navbar-brand 
-      span.glyphicon.glyphicon-globe
+      span.glyphicon.glyphicon-map-marker
       |Find place
     ul.nav.navbar-nav.navbar-right
-      li
-        a(href="#") Login
+      if currentUser
+        li
+          img.img-circle(
+            style="height: 42px; margin: 4px;"
+            src=currentUser.profile.picture
+            )
+      li.dropdown
+        unless currentUser
+          a#login Log in with Google
+        else
+          a.dropdown-toggle(
+            href="#"
+            data-toggle="dropdown"
+            )
+            | #{currentUser.profile.name}
+          ul.dropdown-menu
+            li
+              a#logout Log out
+
