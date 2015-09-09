@@ -12,6 +12,11 @@ Meteor.methods
 
     try
       res = Meteor.http.get url, {params:params}
-      res.data.response.venues
+      res.data.response.venues.map (venue) ->
+        name: venue.name
+        lat: venue.location.lat
+        lng: venue.location.lng
+        address: venue.location.address
+        city: venue.location.city
     catch err
       throw err

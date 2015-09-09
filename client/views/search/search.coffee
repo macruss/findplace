@@ -59,26 +59,19 @@ Template.search.rendered = () ->
         radius: radius
         date: new Date()
 
-    getVenues: (query) ->
+    getVenues: (query, cb) ->
       Meteor.call "getVenues", @_getQueryParams(query), (err, venues) ->
         if err then throw err
         
-        venues = venues.map (venue, i) ->
-          #render each venue on the map
+        #render each venue on the map
+        venues.forEach (venue, i) ->
           setTimeout ->
             map.addMarker
               position: 
-                lat: venue.location.lat
-                lng: venue.location.lng
+                lat: venue.lat
+                lng: venue.lng
               title: venue.name
           , i * 20
-
-          # and return object for serch result table
-          name: venue.name
-          lat: venue.location.lat
-          lng: venue.location.lng
-          address: venue.location.address
-          city: venue.location.city
 
         Session.set 'venues', venues
 

@@ -7,10 +7,12 @@
 accounts-google
 accounts-password
 coffeescript
+harrison:papa-parse
 http
 meteor-platform
 momentjs:moment
 mquandalle:jade
+pfafman:filesaver
 service-configuration
 stylus
 twbs:bootstrap
