@@ -80,12 +80,12 @@ Template.search.rendered = () ->
   mapOptions = 
     center: new google.maps.LatLng 50.44985, 30.523151 # Tokyo
     zoom: 15
-    panControl: on
-    zoomControl: on
-    mapTypeControl: on
-    scaleControl: on
-    streetViewControl: on
-    overviewMapControl: no
+    panControl: false
+    zoomControl: true
+    mapTypeControl: true
+    scaleControl: true
+    streetViewControl: true
+    overviewMapControl: false
     mapTypeId: google.maps.MapTypeId.ROADMAP
 
   window.map = new Map mapCanvas, mapOptions

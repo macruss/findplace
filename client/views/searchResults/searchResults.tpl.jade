@@ -1,6 +1,7 @@
 section.search-results
   h3 #{venues.length} venues
-  button(type="button").btn.btn-default.pull-right#export Export CSV
+  if currentUser
+    button(type="button").btn.btn-default.pull-right#export Export CSV
   table.table.table-hover
     thead
       tr
