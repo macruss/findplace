@@ -50,6 +50,7 @@ Template.search.rendered = () ->
     storeQuery: (query) ->
       center = map._getCenter()
       radius = map.getRadius(center[0], map.getNECorner()[0])
+      zoom = map.getZoom()
 
       Queries.insert
         userId: Meteor.userId()
@@ -57,9 +58,10 @@ Template.search.rendered = () ->
         lat: center[0]
         lng: center[1]
         radius: radius
+        zoom: zoom
         date: new Date()
 
-    getVenues: (query, cb) ->
+    getVenues: (query) ->
       Meteor.call "getVenues", @_getQueryParams(query), (err, venues) ->
         if err then throw err
         
