@@ -1,6 +1,7 @@
 body
   font-family Geneva, Arial, Helvetica, sans-serif
-a
+a 
+td
   cursor pointer
 h3
   display inline-block
@@ -17,10 +18,10 @@ h3
   height 400px
   background-color #CCC
   margin 10px 0
-  
-.query.selected > td
-  background-color #386DF6
+
+.selected
   color #fff
-.venue.selected > td
-  background-color #3B8D04
-  color #fff
+  &.query > td
+    background-color #386DF6
+  &.venue > td
+    background-color #3B8D04

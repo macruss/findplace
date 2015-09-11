@@ -38,6 +38,7 @@ momentjs:moment@2.10.6
 mongo@1.1.0
 mquandalle:jade@0.4.3
 mquandalle:jade-compiler@0.4.3
+mrt:humane@3.1.0
 npm-bcrypt@0.7.8_2
 oauth@1.1.4
 oauth2@1.1.3

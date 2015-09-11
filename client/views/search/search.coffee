@@ -1,4 +1,7 @@
 Template.search.rendered = () ->
+  message = humane.create
+    baseCls: 'humane-bigbox'
+    timeout: 2000
 
   # ======== Map =============
   class Map extends google.maps.Map
@@ -65,6 +68,7 @@ Template.search.rendered = () ->
       Meteor.call "getVenues", @_getQueryParams(query), (err, venues) ->
         if err then throw err
         
+        message.log 'Nothing found' if venues.length == 0
         #render each venue on the map
         venues.forEach (venue, i) ->
           setTimeout ->
@@ -83,10 +87,6 @@ Template.search.rendered = () ->
     center: new google.maps.LatLng 50.44985, 30.523151 # Tokyo
     zoom: 15
     panControl: false
-    zoomControl: true
-    mapTypeControl: true
-    scaleControl: true
-    streetViewControl: true
     overviewMapControl: false
     mapTypeId: google.maps.MapTypeId.ROADMAP
 
@@ -97,6 +97,6 @@ Template.search.events
     if e.which == 13
       query = e.target.value
 
-      map.removeAllMarkers() if map.markers.length
+      map.removeAllMarkers()
       map.getVenues query
       map.storeQuery query if Meteor.user()

@@ -12,6 +12,7 @@ http
 meteor-platform
 momentjs:moment
 mquandalle:jade
+mrt:humane
 pfafman:filesaver
 service-configuration
 stylus

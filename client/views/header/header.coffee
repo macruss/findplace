@@ -1,9 +1,11 @@
 Template.header.events
   'click #logout': () ->
-    Meteor.logout()
+    Meteor.logout ->
+      delete Session.set 'venues', null
+      map.removeAllMarkers()
   'click #login': () ->
     Meteor.loginWithGoogle(
       requestPermissions: ['email']
     , (err) ->
-      console.log err.reason if err
+      throw err if err
     )
