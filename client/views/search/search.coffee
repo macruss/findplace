@@ -31,13 +31,11 @@ Template.search.rendered = () ->
 
     # get south-west map corner [lat, lng]
     getSWCorner: ->
-      bounds = @getBounds()
-      [bounds.Ja.G, bounds.Ea.j]
+      _.values map.getBounds().getNorthEast()
 
     # get north-east map corner [lat, lng]
     getNECorner: ->
-      bounds = @getBounds()
-      [bounds.Ja.j, bounds.Ea.G]
+      _.values map.getBounds().getSouthWest()
 
     addMarker: (prop) ->
       prop.map = this
