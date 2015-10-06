@@ -1,28 +1,26 @@
-convertToKm = (radius) ->
+convertMeterToKm = (radius) ->
   (radius / 1000).toFixed 1
 
 Template.queriesHistory.helpers
   queries: ->
     Queries.find().map (query)->
-      query.radius = "#{convertToKm query.radius}km"
+      query.radius = "#{convertMeterToKm query.radius}km"
       query.date = moment(query.date).format("MMM Do YY, hh:mm:ss")
       query
+  currentQuery: -> Session.get('currentQueryId')
 
 Template.queriesHistory.events
+  #delete query
   'click .delete': (e) ->
     e.stopPropagation()
     Queries.remove @_id
 
   #repeat the stored query
-  'click .query': (e, t) ->
-    $row = $(e.currentTarget)
+  'click .query': ->
+    currentQueryId = Session.get('currentQueryId')
 
-    map.setCenter new google.maps.LatLng(@lat, @lng)
-    map.setZoom(@zoom)
+    map.move(@lat, @lng, @zoom)
 
-    if not $row.hasClass('selected')
-      $('.selected').removeClass('selected')
-      $row.addClass 'selected'
-
-      map.removeAllMarkers()
-      map.getVenues(@query)
+    if @_id != currentQueryId
+      map.update @query
+      Session.set 'currentQueryId', @_id

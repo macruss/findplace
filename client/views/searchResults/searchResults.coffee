@@ -1,6 +1,6 @@
 Template.searchResults.helpers
-  venues: ->
-    Session.get 'venues'
+  venues: -> Session.get 'venues'
+  currentMarker: -> Session.get 'currentMarker'
 
 Template.searchResults.events
   'click #export': ->
@@ -11,14 +11,15 @@ Template.searchResults.events
       blob = new Blob([csv],{type:"text/plain"})
       saveAs(blob, 'venues.csv')
 
-  'click .venue': (e, t) ->
-    $row = t.$(e.target).parent('tr')
+  # select and animate venue on map
+  'click .venue': (ev, tmpl) ->
+    currentMarker = Session.get 'currentMarker'
 
-    if not $row.hasClass('selected')
-      t.marker.setAnimation null if t.marker
-      t.$('.selected').removeClass('selected')
-      $row.addClass 'selected'
-      t.marker = _.find map.markers, (m) =>
-        m.title == @name
+    if @name != currentMarker
+      tmpl.marker.setAnimation null if tmpl.marker
+      
+      tmpl.marker = _.find map.markers, (marker) =>
+        marker.title == @name
 
-      t.marker.setAnimation(google.maps.Animation.BOUNCE)
+      tmpl.marker.setAnimation google.maps.Animation.BOUNCE
+      Session.set 'currentMarker', tmpl.marker.title

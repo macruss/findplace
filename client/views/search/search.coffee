@@ -79,10 +79,18 @@ Template.search.rendered = () ->
 
         Session.set 'venues', venues
 
+    move: (lat, lng, zoom) ->
+      @setCenter new google.maps.LatLng(lat, lng)
+      @setZoom(zoom)
+
+    update: (query) ->
+      @removeAllMarkers()
+      @getVenues query
+
 
   mapCanvas = @find '#map'
   mapOptions = 
-    center: new google.maps.LatLng 50.44985, 30.523151 # Tokyo
+    center: new google.maps.LatLng 50.44985, 30.523151 # Kiev
     zoom: 15
     panControl: false
     overviewMapControl: false
@@ -95,6 +103,6 @@ Template.search.events
     if e.which == 13
       query = e.target.value
 
-      map.removeAllMarkers()
-      map.getVenues query
-      map.storeQuery query if Meteor.user()
+      map.update query
+      currentQueryId = map.storeQuery query if Meteor.user()
+      Session.set 'currentQueryId', currentQueryId

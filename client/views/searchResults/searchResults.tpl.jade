@@ -12,7 +12,7 @@ section.search-results
         th Longitude
     tbody
       +each venues
-        tr.venue
+        tr.venue(class="{{#if eq currentMarker name}} selected {{/if}}")
           td #{name}
           td #{city}
           td #{address}
