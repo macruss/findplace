@@ -5,8 +5,11 @@ Template.search.rendered = () ->
 
   # ======== Map =============
   class Map extends google.maps.Map
-    _getCenter: ->
-      (value for own _, value of @getCenter())
+    # convert coords to format [lat: number, lng: number]
+    _toArray: (coords) ->
+      coords.toUrlValue().split(',').map (n) -> +n
+    _getCenter: () ->
+      @_toArray @getCenter()
 
     _getQueryParams: (query)->
       center = @_getCenter()
@@ -31,11 +34,11 @@ Template.search.rendered = () ->
 
     # get south-west map corner [lat, lng]
     getSWCorner: ->
-      _.values map.getBounds().getNorthEast()
+      @_toArray @getBounds().getNorthEast()
 
     # get north-east map corner [lat, lng]
     getNECorner: ->
-      _.values map.getBounds().getSouthWest()
+      @_toArray @getBounds().getSouthWest()
 
     addMarker: (prop) ->
       prop.map = this
@@ -49,9 +52,9 @@ Template.search.rendered = () ->
       Session.set 'venues', null
 
     storeQuery: (query) ->
-      center = map._getCenter()
-      radius = map.getRadius(center[0], map.getNECorner()[0])
-      zoom = map.getZoom()
+      center = @_getCenter()
+      radius = @getRadius(center[0], map.getNECorner()[0])
+      zoom = @getZoom()
 
       Queries.insert
         userId: Meteor.userId()
@@ -104,5 +107,5 @@ Template.search.events
       query = e.target.value
 
       map.update query
-      currentQueryId = map.storeQuery query if Meteor.user()
+      currentQueryId = map.storeQuery(query) if Meteor.user()
       Session.set 'currentQueryId', currentQueryId
