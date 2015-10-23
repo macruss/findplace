@@ -14,6 +14,9 @@ section.history
         tr.query(class="{{#if eq currentQuery _id}} selected {{/if}}")
           td
             span.glyphicon.glyphicon-trash.delete
+            if eq currentQuery _id
+              if searching
+                i.fa.fa-spinner.fa-spin
           td
             strong #{query}
           td #{lat}

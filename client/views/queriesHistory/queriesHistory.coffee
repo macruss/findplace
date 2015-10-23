@@ -7,7 +7,8 @@ Template.queriesHistory.helpers
       query.radius = "#{convertMeterToKm query.radius}km"
       query.date = moment(query.date).format("MMM Do YY, hh:mm:ss")
       query
-  currentQuery: -> Session.get('currentQueryId')
+  currentQuery: -> Session.get 'currentQueryId' 
+  searching: -> Session.get 'searching'
 
 Template.queriesHistory.events
   #delete query
@@ -17,7 +18,7 @@ Template.queriesHistory.events
 
   #repeat the stored query
   'click .query': ->
-    currentQueryId = Session.get('currentQueryId')
+    currentQueryId = Session.get 'currentQueryId'
 
     map.move(@lat, @lng, @zoom)
 

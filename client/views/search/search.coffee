@@ -81,6 +81,7 @@ Template.search.rendered = () ->
           , i * 20
 
         Session.set 'venues', venues
+        Session.set 'searching', null
 
     move: (lat, lng, zoom) ->
       @setCenter new google.maps.LatLng(lat, lng)
@@ -89,6 +90,7 @@ Template.search.rendered = () ->
     update: (query) ->
       @removeAllMarkers()
       @getVenues query
+      Session.set 'searching', true
 
 
   mapCanvas = @find '#map'

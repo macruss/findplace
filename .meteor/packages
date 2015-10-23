@@ -7,6 +7,7 @@
 accounts-google
 accounts-password
 coffeescript
+fortawesome:fontawesome
 harrison:papa-parse
 http
 meteor-platform
